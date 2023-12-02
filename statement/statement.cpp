@@ -20,28 +20,20 @@ void save(std::ofstream& file_w, list& statement)
     int len = statement.name.length();
     file_w.write((char*)&len, sizeof(int));
     file_w.write(statement.name.c_str(), len);
+
     len = statement.lastname.length();
     file_w.write((char*)&len, sizeof(int));
     file_w.write(statement.lastname.c_str(), len);
+
     len = statement.data.length();
     file_w.write((char*)&len, sizeof(int));
     file_w.write(statement.data.c_str(), len);
+
     file_w.write((char*)&statement.sum, sizeof(statement.sum));
 } 
-void load(std::ifstream& file_r, list& statement)
-{
-    int len;
-    file_r.read((char*)&len, sizeof(len));
-    statement.name.resize(len);
-    file_r.read((char*)statement.name.c_str(), len);
-    file_r.read((char*)&len, sizeof(len));
-    statement.lastname.resize(len);
-    file_r.read((char*)statement.lastname.c_str(), len);
-    file_r.read((char*)&len, sizeof(len));
-    statement.data.resize(len);
-    file_r.read((char*)statement.data.c_str(), len);
-    file_r.read((char*)&statement.sum, sizeof(statement.sum));
-}
+
+
+
 
 //std::ostream& operator<<(std::ostream& os, const list& statement)   // перегрузка  вывода << 
 //{
@@ -93,12 +85,33 @@ int main()
             std::cout << "file read not open!!";
             return 1;
         }
-       
+        
         while (!file_r.eof())
         {
-            load(file_r, statement);
-            myVec_bin.push_back(statement);
+            int len;
+               file_r.read((char*)&len, sizeof(len));
+                statement.name.resize(len);
+                file_r.read((char*)statement.name.c_str(), len);
+            
+                if (file_r.eof())
+                {
+                    break;
+                }
+            
+                file_r.read((char*)&len, sizeof(len));
+                statement.lastname.resize(len);
+                file_r.read((char*)statement.lastname.c_str(), len);
+            
+                file_r.read((char*)&len, sizeof(len));
+                statement.data.resize(len);
+                file_r.read((char*)statement.data.c_str(), len);
+            
+                file_r.read((char*)&statement.sum, sizeof(statement.sum));
+
+                
+                myVec_bin.push_back(statement);
         }
+        
         file_r.close();
     }
     for (const auto r : myVec_bin)
@@ -106,6 +119,30 @@ int main()
         std::cout << r.name << ' ' << r.lastname << ' ' << r.data << ' ' << r.sum << '\n';
     }
 }
+
+
+//void load(std::ifstream& file_r, list& statement)
+//{
+//    int len;
+//    file_r.read((char*)&len, sizeof(len));
+//    statement.name.resize(len);
+//    file_r.read((char*)statement.name.c_str(), len);
+//
+//    if (file_r.eof())
+//    {
+//        break;
+//    }
+//
+//    file_r.read((char*)&len, sizeof(len));
+//    statement.lastname.resize(len);
+//    file_r.read((char*)statement.lastname.c_str(), len);
+//
+//    file_r.read((char*)&len, sizeof(len));
+//    statement.data.resize(len);
+//    file_r.read((char*)statement.data.c_str(), len);
+//
+//    file_r.read((char*)&statement.sum, sizeof(statement.sum));
+//}
 
 
 //bool load(std::ifstream& file_r, list& statement)
@@ -133,6 +170,8 @@ int main()
 //{
 //    myVec_bin.push_back(statement);
 //}
+
+
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
